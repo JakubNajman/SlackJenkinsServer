@@ -1,0 +1,53 @@
+version: '3.2'
+
+services: 
+    gms:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            cache_from: 
+                - golang:1.16-alpine
+#        deploy:
+#            replicas: 1
+        env_file: .env
+        ports:
+            - "9191:9191"
+#        depends_on:
+#            -   mongodb
+        networks:
+            data:
+                ipv4_address: 10.11.0.5
+        extra_hosts:
+            -   _mongodb._tcp.10.11.0.6:10.11.0.6
+#        volumes:
+#            -   type: bind
+#                source: ./*.json
+#                target: /go/src/gms
+
+#    mongodb:
+#        image: mongo:latest
+#        env_file: .env.mongo
+#        ports:
+#            - "27017:27017"
+#        volumes:
+#            - mongodb_data_container:/jenkinsbuilds/db
+#            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+##            - ./mongod.conf:/etc/mongod.conf
+#        networks:
+#            jenkinsbuilds:
+#                ipv4_address: 10.11.0.6
+#        command: mongod
+#
+#volumes:
+#    mongodb_data_container:
+
+
+networks:
+    data:
+        driver: bridge
+        driver_opts:
+            com.docker.network.enable_ipv6: "false"
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.11.0.0/16
